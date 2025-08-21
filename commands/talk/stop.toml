@@ -1,0 +1,6 @@
+description = "Stop Talk capture if running."
+
+prompt = """
+Call `talk_stop()` and print the result JSON.
+Then call `talk_status()` to confirm `running=false` and show the final transcript (if any).
+"""

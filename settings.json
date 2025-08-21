@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "talk": {
+      "command": "/home/<homedir>/Talk_MCP_for_Gemini_CLI/talkmcp/bin/python",
+      "args": [
+        "/home/<homedir>/Talk_MCP_for_Gemini_CLI/talk.py"
+      ]
+    }
+  }
+}

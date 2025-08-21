@@ -1,0 +1,30 @@
+description = "Talk (mic → transcript → model replies)."
+
+prompt = """
+You have tools: talk_start, talk_status, talk_stop, list_devices.
+
+Goal:
+- Start capture with talk_start(...).
+- If blocking=false, poll talk_status() every ~0.5s until running=false.
+- When done:
+  1) Let T = final transcript.
+  2) If T is empty, say briefly you didn't catch anything.
+  3) Otherwise, REPLY AS THE ASSISTANT to T as if the user had typed it.
+     Do NOT call more tools. Do NOT wrap your reply in code fences.
+
+Argument handling:
+- Parse key=value pairs after the command. Supported:
+  rate:int, channels:int, chunk:int, energy_gate:float, min_talk_ms:int,
+  end_sil_ms:int, max_utter_ms:int, pre_roll_ms:int, device_index:int,
+  blocking:bool (true/false).
+- Only pass provided args.
+
+Steps:
+1) Extract args and call talk_start(...).
+2) If response.running is true AND blocking=false:
+     loop:
+       - sleep ~0.5s
+       - call talk_status()
+       - exit when running=false
+3) Produce your assistant reply to T (if any), as plain text.
+"""
