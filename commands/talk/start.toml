@@ -50,8 +50,7 @@ Goal per cycle:
                 Do not echo the command or its output. Do not block.
           - If tts_speak fails, skip both token and playback silently.
 
-     5c) After the token emission (or skip), wait ~30 seconds by polling talk_status()
-         (sleep ~2.5s → talk_status() → sleep ~2.5s). Do not print during this pause.
+     5c) After the token emission (or skip), wait ~30 seconds by polling talk_status(). Do not print during this pause. Let the user know we are waiting to allow the audio playback before recording again.
 
 6) Before starting the next cycle, check stop conditions (below). If none, go back to Step 1.
 
