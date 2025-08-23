@@ -1,11 +1,11 @@
 description = "Talk (hands-free: mic → transcript → answer → repeat until /talk:stop)."
 
 prompt = """
-You have tools: talk_start, talk_status, talk_stop, list_devices.
+You have tools: talk_start, talk_status, talk_stop, list_devices, tts_speak.
 
 High-level behavior:
 - Enter a HANDS-FREE LOOP: record → transcribe → answer → short pause → repeat.
-- Keep looping until a stop condition is met.
+- Keep looping 4 times or until a stop condition is met.
 
 Goal per cycle:
 1) Start capture with talk_start(...).
@@ -13,23 +13,46 @@ Goal per cycle:
      rate:int, channels:int, chunk:int, energy_gate:float, min_talk_ms:int,
      end_sil_ms:int, max_utter_ms:int, pre_roll_ms:int, device_index:int,
      blocking:bool (true/false).
-   - Only pass provided args.
+   - Additionally, capture (but do NOT pass to talk_start) optional TTS prefs for later:
+     tts_voice:str, tts_model:str, tts_format:str (e.g., "mp3" or "wav").
+   - Only pass provided args to talk_start.
    - If the user asked for device listing earlier, you MAY call list_devices() once to honor a provided device_index.
+
 2) If response.running is true AND blocking=false:
      loop:
-       - sleep ~0.5s
+       - sleep ~0.3s
        - call talk_status()
        - exit when running=false
+
 3) When running=false, let T = the final transcript (from the most recent status or talk_start response).
+
 4) If T is empty or only whitespace:
      - Briefly print a tiny status like "…listening" and count this as one idle cycle.
      - If there are 4 consecutive idle cycles (≈ no speech), END the session politely.
      - Otherwise continue to the next cycle (Step 1).
+
 5) If T is non-empty:
-     - REPLY AS THE ASSISTANT to T as if the user had typed it.
-       Do NOT call more tools inside your reply. Do NOT wrap your reply in code fences.
-     - After your reply has been shown, wait ~5 seconds by polling talk_status()
-       (sleep ~2.5s → talk_status() → sleep ~2.5s). Do not print during this pause.
+     5a) REPLY AS THE ASSISTANT to T as if the user had typed it.
+         - Keep replies concise but helpful; preserve conversational context naturally across cycles.
+         - Do NOT call tools inside the visible reply.
+         - Do NOT wrap your reply in code fences.
+
+      5b) Immediately after the reply is printed, synthesize a voice version of your reply:
+          - Call tts_speak(text=<your reply>, voice=tts_voice?, model=tts_model?).
+          - Let A = the tool result.
+          - If A.ok and A.path:
+              • EMIT a single machine-readable token on its own line:
+                  [[AUDIO:{A.path}]]
+                (No extra text or punctuation, no code fences.)
+              • Then PLAY the audio using the Shell tool (non-blocking) in a dash-safe way:
+                  - Run exactly:
+                    sh -lc 'FILE="{A.path}"; ( [ -n "$PLAY_CMD" ] && eval "$PLAY_CMD \"$FILE\"" ) || ffplay -autoexit -nodisp -loglevel quiet "$FILE" >/dev/null 2>&1 &'
+                Do not echo the command or its output. Do not block.
+          - If tts_speak fails, skip both token and playback silently.
+
+     5c) After the token emission (or skip), wait ~5 seconds by polling talk_status()
+         (sleep ~2.5s → talk_status() → sleep ~2.5s). Do not print during this pause.
+
 6) Before starting the next cycle, check stop conditions (below). If none, go back to Step 1.
 
 Stop conditions (end the loop and session):
@@ -40,10 +63,14 @@ Stop conditions (end the loop and session):
 - The capture is externally stopped via /talk:stop and subsequent talk_start immediately fails.
 
 Output rules:
-- The ONLY visible text should be your assistant replies (Step 5) or brief "…listening" notices (Step 4).
+- The ONLY visible text should be:
+  • your assistant replies (Step 5a)
+  • brief "…listening" notices (Step 4)
+  • the single-line audio token [[AUDIO:/path]] when available (Step 5b)
 - Never dump raw tool payloads, JSON, or internal state.
+- Never wrap the token in code fences.
 
 Notes:
 - Hands-free requires blocking=false behavior from the capture tool; assume that is the default unless the user explicitly passed blocking=true.
-- Keep replies concise but helpful; preserve conversational context naturally across cycles.
+- The audio token is for the CLI to detect and play; do not describe it in prose—just print it as specified.
 """

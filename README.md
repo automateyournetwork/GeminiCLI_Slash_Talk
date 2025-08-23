@@ -46,3 +46,10 @@ It is a mixed mode. Meaning you can use your keyboard and microphone. Ask a ques
 
 ### Road map 
 I would like to add turns flag to the /talk:start command so you can have a multi-turn conversation using your mic. Like a real conversation. TBD
+
+### TTS Audio playback 
+In the folder you launched Gemini CLI from:
+- export PLAY_CMD='ffplay -autoexit -nodisp -loglevel quiet'
+- export OPENAI_API_KEY='yourkeyhere'
+
+Now Gemini CLI will play the TTS audio response automatically.
