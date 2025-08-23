@@ -6,6 +6,7 @@ You have tools: talk_start, talk_status, talk_stop, list_devices, tts_speak.
 High-level behavior:
 - Enter a HANDS-FREE LOOP: record → transcribe → answer → short pause → repeat.
 - Keep looping 4 times or until a stop condition is met.
+- Do not print talk_status() just display the countdown timer while waiting.
 
 Goal per cycle:
 1) Start capture with talk_start(...).
