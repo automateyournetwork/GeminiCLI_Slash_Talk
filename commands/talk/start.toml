@@ -1,12 +1,12 @@
 description = "Talk (hands-free: mic → transcript → answer → repeat until /talk:stop)."
 
 prompt = """
-You have tools: talk_start, talk_status, talk_stop, list_devices, tts_speak.
+You have tools: talk_start, talk_stop, list_devices, tts_speak.
 
 High-level behavior:
+- Always use the configured default args for talk_start unless overridden by user-provided args.
 - Enter a HANDS-FREE LOOP: record → transcribe → answer → short pause → repeat.
-- Keep looping 4 times or until a stop condition is met.
-- Do not print talk_status() just display the countdown timer while waiting.
+- Record for 15 seconds
 
 Goal per cycle:
 1) Start capture with talk_start(...).
@@ -21,9 +21,7 @@ Goal per cycle:
 
 2) If response.running is true AND blocking=false:
      loop:
-       - sleep ~0.3s
-       - call talk_status()
-       - exit when running=false
+       - record for 15 seconds total (non-blocking).
 
 3) When running=false, let T = the final transcript (from the most recent status or talk_start response).
 
@@ -51,7 +49,7 @@ Goal per cycle:
                 Do not echo the command or its output. Do not block.
           - If tts_speak fails, skip both token and playback silently.
 
-     5c) After the token emission (or skip), wait ~30 seconds by polling talk_status(). Do not print during this pause. Let the user know we are waiting to allow the audio playback before recording again.
+     5c) After the token emission (or skip), wait ~30 seconds. Tell the user there is a 30 second pause. Let the user know we are waiting to allow the audio playback before recording again.
 
 6) Before starting the next cycle, check stop conditions (below). If none, go back to Step 1.
 
