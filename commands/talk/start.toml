@@ -23,10 +23,10 @@ Goal per cycle:
      loop:
        - record for 15 seconds total (non-blocking).
 
-3) When running=false, let T = the final transcript (from the most recent status or talk_start response).
+3) When running=false, let T = the final transcript (from the most recent or talk_start response).
 
 4) If T is empty or only whitespace:
-     - Briefly print a tiny status like "…listening" and count this as one idle cycle.
+     - Briefly print a tiny message like "…listening" and count this as one idle cycle.
      - If there are 4 consecutive idle cycles (≈ no speech), END the session politely.
      - Otherwise continue to the next cycle (Step 1).
 
