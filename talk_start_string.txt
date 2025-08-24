@@ -1,1 +1,7 @@
+Windows WSL
 /talk:start device_index=0 rate=16000 chunk=1024 energy_gate=15 min_talk_ms=250 end_sil_ms=800 pre_roll_ms=250 blocking=false 
+
+MacOS
+/talk:start device_index=1 rate=44100 energy_gate=10 min_talk_ms=250 end_sil_ms=800 blocking=false
+
+Defaults are adustable in the Start TOML defaults
