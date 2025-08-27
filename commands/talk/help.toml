@@ -13,6 +13,7 @@ Commands:
 • /talk:devices                   List microphones you can select by index.
 • /talk:tts [voice=... model=...] Speak the last assistant reply with TTS.
 • /talk:langs                     Show supported language codes (incl. Cantonese alias).
+• /talk:voices                    List available TTS voices (short codes + styles).
 
 Core flow:
 1) talk_start records from your mic using VAD (pre-roll, energy gate, end-of-silence).
@@ -40,7 +41,7 @@ Key /talk:start args (key=value):
 • language:str           'auto' or a code from /talk:langs (e.g., en, fr, ja, zh, yue).
 
 TTS preferences (captured by the agent; not passed to talk_start):
-• tts_voice:str          e.g., alloy
+• voice / tts_voice:str  Short codes (see /talk:voices): alloy, ash, ballad, coral, echo, fable, nova, onyx, sage, shimmer.
 • tts_model:str          e.g., gpt-4o-mini-tts (default), gpt-4o-tts
 • tts_format:str         e.g., mp3 or wav (the agent decides the container)
 
@@ -53,8 +54,12 @@ Examples:
   /talk:start language=yue blocking=false
 • Lower the VAD gate for a quiet mic:
   /talk:start energy_gate=10 blocking=false
-• Speak the last reply again:
-  /talk:tts voice=alloy model=gpt-4o-mini-tts
+• Choose a TTS voice for hands-free replies:
+  /talk:start voice=onyx blocking=false
+• Speak the last reply again with a different voice:
+  /talk:tts voice=shimmer model=gpt-4o-mini-tts
+• Browse available voice codes:
+  /talk:voices
 
 Environment (MCP/server):
 • OPENAI_API_KEY         Required for TTS.
@@ -74,4 +79,5 @@ Playback contract:
 Tips:
 • Use /talk:devices to find your iPhone/USB mic index, then pass device_index=<n>.
 • Use language=auto to let Whisper detect; force language for cleaner diarization in multilingual speech.
+• Use /talk:voices to discover and pick a voice quickly by short code.
 """
