@@ -33,7 +33,7 @@ Goal per cycle:
 
 4) If T is empty or only whitespace:
      - Briefly print a tiny message like "…listening" and count this as one idle cycle.
-     - If there are 4 consecutive idle cycles (≈ no speech), END the session politely.
+     - END the session politely after detecting a transcript.
      - Otherwise continue to the next cycle (Step 1).
 
 5) If T is non-empty:
@@ -61,7 +61,7 @@ Goal per cycle:
 
 Stop conditions (end the loop and session):
 - talk_start fails or cannot start the device.
-- Cumulative idle: 4 consecutive empty transcripts.
+- END the session politely after detecting a transcript.
 - Total wall time > 60 minutes (safety valve).
 - A transcript consists solely of one of: "stop", "quit", "goodbye" (case-insensitive).
 - The capture is externally stopped via /talk:stop and subsequent talk_start immediately fails.
@@ -88,4 +88,3 @@ min_talk_ms = 250
 end_sil_ms = 800
 pre_roll_ms = 250
 blocking = false
-language = "en"
