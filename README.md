@@ -29,17 +29,21 @@ This will add the /talk commands to Gemini CLI
 
 ### You are all set 
 
-This command seemed to work best for me: 
+I suggest you check the commands with /talk:help
 
-/talk:start device_index=0 rate=16000 chunk=1024 energy_gate=15 min_talk_ms=250 end_sil_ms=800 pre_roll_ms=250 blocking=false 
+Then discover your mic with /talk:discover
 
-/talk:start alone doenst seem to do much. 
+If you want to pick your text to speech voice use /talk:voices
 
-You can use /talk:device to find your device index.
+Then start a conversation with /talk:start
 
-Blocking=true will block Gemini CLI until you stop talking.
+You can use flags like:
 
-Blocking=false will allow you to keep using Gemini CLI while it listens in the background.
+ --device_index to select your mic if you have multiple mics.
+ --language to select your language. Default is auto detect.
+ --voice to select your voice. Default is auto select.
+
+Again check the talk commands with /talk:help
 
 ### Keep the conversation going
 It is a mixed mode. Meaning you can use your keyboard and microphone. Ask a question with your mic, get an answer, then type a follow up question using your keyboard. Or vice versa.
