@@ -2,9 +2,9 @@
 Enable your microphone on Windows WSL Ubuntu with this and the corresponding MCP 
 
 ## Important Note:
-This has all been setup on Windows 11 with WSL2 Ubuntu using pyAudio. 
+This has all been setup on Windows 11 with WSL2 Ubuntu using pyAudio as well as MacOS.
 
-MacOS and Windows native support are not tested. Likely need to adjust the MCP and not this code for those other OS's.
+Windows native support are not tested. Likely need to adjust the MCP and not this code for those other OS's.
 
 ## You will need this MCP: 
 https://github.com/automateyournetwork/Talk_MCP_for_Gemini_CLI
